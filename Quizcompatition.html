@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Questions Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .options-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .score-board {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+        .congrats {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="quiz-box">
+        <h3 id="question-number">Question 1/30</h3>
+        <h2 id="question-text">Question Text</h2>
+        <div class="options-container" id="options-box"></div>
+        <div class="score-board">
+            Right: <span id="right-count" style="color: green; font-weight: bold;">0</span> | 
+            Wrong: <span id="wrong-count" style="color: red; font-weight: bold;">0</span>
+        </div>
+    </div>
+
+    <div id="result-box" class="hidden">
+        <h1 class="congrats">🎉 Congratulations! 🎉</h1>
+        <p>Apni quiz complete korechen!</p>
+        <h2>Final Score:</h2>
+        <p>Total Right: <b style="color: green;" id="final-right">0</b></p>
+        <p>Total Wrong: <b style="color: red;" id="final-wrong">0</b></p>
+    </div>
+</div>
+
+<!-- Victory Audio (Short Tune) -->
+<audio id="win-sound" src="https://actions.google.com/sounds/v1/ambiences/outdoor_fireworks.ogg" preload="auto"></audio>
+
+<script>
+    // 30-ti question-er pattern (Akhane 3-ti sample dewya holo, erokom vabe 30-ti add korte parben)
+    const questions = [
+        // Avengers
+        {
+            question: "Iron Man-er asol naam ki?",
+            options: ["Tony Stark", "Steve Rogers", "Bruce Banner", "Peter Parker"],
+            correct: 0
+        },
+        // BD
+        {
+            question: "Bangladesher rajdhani kothay?",
+            options: ["Chittagong", "Sylhet", "Dhaka", "Khulna"],
+            correct: 2
+        },
+        // World
+        {
+            question: "Prithibir sobseye boro mahadesh konti?",
+            options: ["Africa", "Asia", "Europe", "America"],
+            correct: 1
+        }
+        // Baki 27-ti question eki format-e ekhane add korun
+    ];
+
+    let currentQuestionIndex = 0;
+    let rightAnswers = 0;
+    let wrongAnswers = 0;
+
+    const questionNumberEl = document.getElementById("question-number");
+    const questionTextEl = document.getElementById("question-text");
+    const optionsBoxEl = document.getElementById("options-box");
+    const rightCountEl = document.getElementById("right-count");
+    const wrongCountEl = document.getElementById("wrong-count");
+    const quizBoxEl = document.getElementById("quiz-box");
+    const resultBoxEl = document.getElementById("result-box");
+    const winSound = document.getElementById("win-sound");
+
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        questionNumberEl.innerText = `Question ${currentQuestionIndex + 1}/${questions.length}`;
+        questionTextEl.innerText = q.question;
+        optionsBoxEl.innerHTML = "";
+
+        q.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("btn");
+            button.onclick = () => selectOption(index);
+            optionsBoxEl.appendChild(button);
+        });
+    }
+
+    function selectOption(selectedIndex) {
+        const q = questions[currentQuestionIndex];
+        if (selectedIndex === q.correct) {
+            rightAnswers++;
+            rightCountEl.innerText = rightAnswers;
+        } else {
+            wrongAnswers++;
+            wrongCountEl.innerText = wrongAnswers;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizBoxEl.classList.add("hidden");
+        resultBoxEl.classList.remove("hidden");
+        document.getElementById("final-right").innerText = rightAnswers;
+        document.getElementById("final-wrong").innerText = wrongAnswers;
+        
+        // Play Music
+        winSound.play().catch(e => console.log("Audio play blocked: ", e));
+    }
+
+    // Start Quiz
+    loadQuestion();
+</script>
+
+</body>
+</html>
